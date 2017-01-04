@@ -1,0 +1,38 @@
+version: '2'
+services:
+    bidcore-elasticsearch:
+        build: bidcore-elasticsearch/ 
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        # Uncomment this section to have elasticsearch data loaded from a volume
+        #volumes:
+        #   - ./log-data:/usr/share/elasticsearch/data
+        environment:
+            - ES_JAVA_OPTS=-Xms1g -Xmx1g
+            - bootstrap.ignore_system_bootstrap_checks=true
+
+    bidcore-logstash:
+        build: bidcore-logstash/
+        # Uncomment to have logstash config loaded from a volume
+        #volumes:
+        #    - ./bidcore-logstash/conf/:/conf
+        command: logstash -f /conf/logstash.conf
+        ports:
+            - "5000:5000/udp"
+    bidcore-console:
+        build: bidcore-console/
+        ports:
+            - "5601:5601"
+        environment:
+            - ELASTICSEARCH_URL=bidcore-elasticsearch:9200
+        # Uncomment this section to have kibana JSON files loaded from a volume
+        volumes:
+            - ./bidcore-console/dashboards:/tmp/dashboards
+
+    #bidcore-alerter:
+    #    build: bidcore-alerter/
+        # Uncomment this section to enable alerting
+        #volumes:
+        #    - ./alerts/config.yaml:/opt/elastalert/config.yaml
+        #    - ./alerts/rules/:/opt/elastalert/rules

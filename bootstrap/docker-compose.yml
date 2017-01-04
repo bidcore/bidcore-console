@@ -1,0 +1,28 @@
+version: '2'
+services:
+    bidcore-elasticsearch:
+        image: bidcore/bidcore-elasticsearch
+        ports:
+            - 9200:9200
+            - 9300:9300
+        # Uncomment this section to have elasticsearch data persisted to a volume
+        #volumes:
+        #   - ./log-data:/usr/share/elasticsearch/data
+    bidcore-logstash:
+        image: bidcore/bidcore-logstash
+        command: logstash -f /conf/logstash.conf
+        ports:
+            - 5000:5000/udp
+        # Uncomment this section and add a logstash.conf file in log-conf/
+        # to have logstash config loaded from a volume
+        #volumes:
+        #    - ./log-conf/:/conf
+    bidcore-console:
+        image: bidcore/bidcore-console
+        ports:
+            - 5601:5601
+        #environment:
+        #    - ELASTICSEARCH_URL=http://bidcore-elasticsearch:9200    
+        # Uncomment this section to have kibana JSON files loaded from a volume
+        #volumes:
+        #    - ./dashboards:/tmp/dashboards
