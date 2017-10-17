@@ -1,0 +1,19 @@
+os:
+  - linux
+services:
+  - docker
+env:
+  matrix:
+    - APP=alerter
+    - APP=console
+    - APP=elasticsearch
+    - APP=logstash
+    - APP=zipkin
+    - APP=import-dashboards
+    - APP=curator
+install:
+  - docker version
+  - docker build -f bidcore-"$APP"/Dockerfile -t bidcore/bidcore-"$APP":travis bidcore-"$APP"/
+script:
+  - docker images
+  - docker inspect bidcore/bidcore-"$APP":travis
