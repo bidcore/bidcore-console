@@ -1,21 +1,8 @@
-FROM kibana:5.1.1
+FROM docker.elastic.co/kibana/kibana:5.5.1
 
-RUN apt-get update
-RUN apt-get -y install curl
-
-COPY kibana.yml /opt/kibana/config/kibana.yml
+ENV ELASTICSEARCH_URL=http://bidcore-elasticsearch:9200
+COPY kibana.yml /usr/share/kibana/config/kibana.yml
 COPY bidconsole.svg /tmp/bidconsole.svg
-COPY dashboards /tmp/dashboards/
-COPY load.sh /tmp/load.sh
-RUN chmod +x /tmp/load.sh
-RUN sed -i -e 's/\r$//' /tmp/load.sh
+RUN ./bin/kibana-plugin install https://github.com/sivasamyk/logtrail/releases/download/v0.1.18/logtrail-5.5.1-0.1.18.zip
+COPY logtrail.json /usr/share/kibana/plugins/logtrail/logtrail.json
 
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-RUN sed -i -e 's/\r$//' /entrypoint.sh
-
-ENV ELASTICSEARCH_URL=bidcore-elasticsearch:9200
-
-VOLUME ["/tmp/dashboards"]
-
-CMD ["/entrypoint.sh"]

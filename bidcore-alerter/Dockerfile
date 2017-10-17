@@ -1,40 +1,35 @@
-FROM python:2.7-wheezy
+FROM python:2.7-alpine
 
-RUN apt-get update
-RUN apt-get -y install curl
+RUN apk update && apk upgrade && apk add bash curl tar musl-dev linux-headers g++ libffi-dev libffi openssl-dev
 
-ENV SET_CONTAINER_TIMEZONE false
-ENV ELASTALERT_VERSION 0.0.95
-ENV CONTAINER_TIMEZONE America/Los_Angeles
-ENV ELASTALERT_URL https://github.com/Yelp/elastalert/archive/v${ELASTALERT_VERSION}.tar.gz
-
-ENV ELASTALERT_HOME /opt/elastalert
-ENV RULES_DIRECTORY /opt/elastalert/rules
-
-ENV ELASTICSEARCH_HOST http://bidcore-elasticsearch
-ENV ELASTICSEARCH_PORT 9200
-ENV ELASTICSEARCH_USERNAME ""
-ENV ELASTICSEARCH_PASSWORD ""
-
+ENV SET_CONTAINER_TIMEZONE=false \
+    CONTAINER_TIMEZONE=Europe/Paris \
+    ELASTALERT_URL=https://github.com/Yelp/elastalert/archive/v0.1.18.tar.gz \
+    ELASTALERT_HOME=/opt/elastalert \
+    RULES_DIRECTORY=/opt/elastalert/rules \
+    ELASTICSEARCH_HOST=http://jhipster-elasticsearch \
+    ELASTICSEARCH_PORT=9200 \
+    ELASTICSEARCH_USERNAME="" \
+    ELASTICSEARCH_PASSWORD=""
 
 RUN mkdir -p /opt/elastalert
 
 RUN curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
-    tar xvf *.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
-    rm *.tar.gz
+    tar -xzvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
+    rm elastalert.tar.gz
 
 WORKDIR /opt/elastalert
 
-RUN python setup.py install && \
-    pip install -e .
+RUN pip install "requests==2.18.1" && \ 
+    pip install "setuptools>=11.3" && \
+    python setup.py install
 
 COPY ./start-elastalert.sh /opt/start-elastalert.sh
 RUN chmod +x /opt/start-elastalert.sh
 #RUN sed -i -e 's/\r$//' /opt/start-elastalert.sh
 
-COPY config.yaml /opt/elastalert/
+COPY ./config.yaml /opt/elastalert/
 RUN mkdir /opt/elastalert/rules
-COPY rules/* rules/
 
 VOLUME ["/opt/elastalert/"]
 VOLUME ["/opt/elastalert/rules"]

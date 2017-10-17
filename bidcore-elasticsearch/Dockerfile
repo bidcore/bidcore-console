@@ -1,3 +1,3 @@
-FROM elasticsearch:5.1.1
+FROM docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 
-VOLUME ["/usr/share/elasticsearch/data"]
+COPY elasticsearch.yml /usr/share/elasticsearch/config/
