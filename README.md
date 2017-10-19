@@ -6,7 +6,8 @@ This is the BiDcore Console, based on the [ELK Stack](https://www.elastic.co/pro
 
 ## Quick Start
 
-Start everything by running `docker-compose up -d` in the `bootstrap/` directory, then access Kibana at [localhost:5601](http://localhost:5601) and Zipkin at [localhost:9411](http://localhost:9411).
+Download the docker compose bootstrap file via `curl -O https://raw.githubusercontent.com/bidcore/bidcore-console/master/bootstrap/docker-compose.yml`.
+Start everything by running `docker-compose up -d`, then access Kibana at [localhost:5601](http://localhost:5601) and Zipkin at [localhost:9411](http://localhost:9411).
 
 ## Contributing
 
