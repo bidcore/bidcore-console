@@ -29,19 +29,22 @@ services:
         build: bidcore-console/
         ports:
             - "5601:5601"
-        environment:
-            - ELASTICSEARCH_URL=bidcore-elasticsearch:9200
-        # Uncomment this section to have kibana JSON files loaded from a volume
-        volumes:
-            - ./bidcore-console/dashboards:/tmp/dashboards
         depends_on:
             - bidcore-elasticsearch
-    #bidcore-alerter:
-    #    build: bidcore-alerter/
-        # Uncomment this section to enable alerting
-        #volumes:
-        #    - ./alerts/config.yaml:/opt/elastalert/config.yaml
-        #    - ./alerts/rules/:/opt/elastalert/rules
+    bidcore-import-dashboards:
+        build: bidcore-import-dashboards/
+        environment:
+            - ELASTICSEARCH_URL=http://bidcore-elasticsearch:9200
+        depends_on:
+            - bidcore-elasticsearch
+
+    # jhipster-alerter:
+    #     build: jhipster-alerter/
+    #     # Uncomment this section to enable alerting
+    #     volumes:
+    #         #- ./alerts/config.yaml:/opt/elastalert/config.yaml
+    #         - ./alerts/rules/:/opt/elastalert/rules
+
     #https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configuration.html
     # jhipster-curator:
     #      build: jhipster-curator/
@@ -56,4 +59,4 @@ services:
     #         - ES_HOSTS=http://jhipster-elasticsearch:9200
     #         - ZIPKIN_UI_LOGS_URL=http://localhost:5601/app/kibana#/dashboard/logs-dashboard?_g=(refreshInterval:(display:Off,pause:!f,value:0),time:(from:now-1h,mode:quick,to:now))&_a=(filters:!(),options:(darkTheme:!f),panels:!((col:1,id:logs-levels,panelIndex:2,row:1,size_x:6,size_y:3,type:visualization),(col:7,columns:!(stack_trace),id:Stacktraces,panelIndex:7,row:1,size_x:4,size_y:3,sort:!('@timestamp',desc),type:search),(col:11,id:Log-forwarding-instructions,panelIndex:8,row:1,size_x:2,size_y:3,type:visualization),(col:1,columns:!(app_name,message),id:All-logs,panelIndex:9,row:4,size_x:12,size_y:7,sort:!('@timestamp',asc),type:search)),query:(query_string:(analyze_wildcard:!t,query:'{traceId}')),title:logs-dashboard,uiState:())
     #     ports:
-    #         - 9411:9411
+#         - 9411:9411

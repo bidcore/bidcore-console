@@ -1,8 +1,9 @@
-FROM docker.elastic.co/beats/metricbeat:5.5.1
+FROM docker.elastic.co/beats/heartbeat:6.1.1
 
-COPY dashboards/ /tmp
-WORKDIR /usr/share/metricbeat/scripts/
-COPY wait-for-elasticsearch.sh create-index-patterns.sh ./
+COPY dashboards /tmp
+WORKDIR /usr/share/metricbeat/
+COPY wait-for-elasticsearch.sh ./
 ENV ELASTICSEARCH_URL=http://bidcore-elasticsearch:9200
+ENV KIBANA_URL=http://bidcore-console:5601
 
-CMD ./wait-for-elasticsearch.sh && ./create-index-patterns.sh && ./import_dashboards -es $ELASTICSEARCH_URL -dir /tmp/
+CMD ./wait-for-elasticsearch.sh && ./metricbeat setup --dashboards -E output.elasticsearch.hosts="[$ELASTICSEARCH_URL]" -E setup.kibana.host=$KIBANA_URL -E setup.dashboards.directory=/tmp
