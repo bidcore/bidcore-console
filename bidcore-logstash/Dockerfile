@@ -1,9 +1,9 @@
-FROM docker.elastic.co/logstash/logstash:5.5.1
+FROM docker.elastic.co/logstash/logstash:6.1.1
 
 COPY logstash.yml /usr/share/logstash/config/
 COPY logstash.conf /usr/share/logstash/pipeline/
 
-ENV ELASTICSEARCH_HOST=jhipster-elasticsearch \
+ENV ELASTICSEARCH_HOST=bidcore-elasticsearch \
     ELASTICSEARCH_PORT=9200 \
     INPUT_TCP_PORT=5000 \
     INPUT_UDP_PORT=5000 \

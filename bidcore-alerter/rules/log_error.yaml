@@ -15,5 +15,8 @@ filter:
 alert:
 - "email"
 - "debug"
+- "gitter"
+# send a webhook to given URL (for example use a testing website like http://webhook.site/)
+gitter_webhook_url: "http://WEBHOOK_URL"
 email:
 - "admins@bidcore.de"
